@@ -9,7 +9,6 @@ const statsRoutes = require("./routes/stats.routes");
 const challengeRoutes = require("./routes/challenge.routes");
 
 const app = express();
-app.use(connectDB); // Connect to the database
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -20,5 +19,5 @@ app.use("/api/trivia", triviaRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/challenges", challengeRoutes);
 
-module.exports = app;
 
+module.exports = app;
