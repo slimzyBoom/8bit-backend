@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require("../models/user.model.js");
 
 const getUserById = async (userId) => {
   return await User.findById(userId).select("-password");

@@ -1,4 +1,4 @@
-const GameStats = require("../models/GameStats");
+const GameStats = require("../models/gameStats.model");
 
 const getUserGameStats = async (userId) => {
   return await GameStats.find({ user: userId }).sort({ createdAt: -1 });

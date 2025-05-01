@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { startSession, answerQuestion } = require("../controllers/trivia.controller");
 const auth = require("../middlewares/auth.middleware");
 const { startSession, answerQuestion, submitScore } = require("../controllers/trivia.controller");
 

@@ -1,7 +1,7 @@
 const axios = require("axios");
-const TriviaSession = require("../models/TriviaSession");
+const TriviaSession = require("../models/TriviaSession.model");
 const shuffleArray = require("../utils/shuffle");
-const GameStats = require("../models/GameStats");
+const GameStats = require("../models/gameStats.model");
 
 const fetchTriviaQuestions = async (amount = 5, difficulty = "easy") => {
   const res = await axios.get(

@@ -1,4 +1,4 @@
-const ChallengeRoom = require("../models/ChallengeRoom");
+const ChallengeRoom = require("../models/ChallengeRoom.model");
 const axios = require("axios");
 const shuffleArray = require("../utils/shuffle");
 
