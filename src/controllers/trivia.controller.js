@@ -1,9 +1,10 @@
 const {
+    fetchTriviaQuestions,
     startTriviaSession,
     submitAnswer,
+    submitFinalScore
   } = require("../services/trivia.service");
 
-  const { submitFinalScore } = require("../services/trivia.service");
   
   exports.startSession = async (req, res, next) => {
     try {
@@ -36,5 +37,16 @@ exports.submitScore = async (req, res) => {
     res.status(201).json({ success: true, stat });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+exports.fetchQuestions = async (req, res, next) => {
+  try {
+    const { amount = 5, difficulty = "easy" } = req.query;
+    const questions = await fetchTriviaQuestions(amount, difficulty);
+    res.status(200).json(questions);
+  } catch (err) {
+    next(err);
   }
 };

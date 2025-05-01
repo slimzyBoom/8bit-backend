@@ -19,8 +19,9 @@ exports.register = async (req, res) => {
       email: newUser.email,
       token,
     });
-  } catch (err) {
-    res.status(500).json({ message: "Server error during registration." });
+  } catch (error) { // ✅ Add (error) here
+    console.error("Registration error:", error.message);
+    res.status(500).json({ message: "Server error during registration.", error: error.message });
   }
 };
 
