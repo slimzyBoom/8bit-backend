@@ -1,9 +1,17 @@
+import { PORT } from "./config/env.config.js";
 import app from "./app.js";
-import dotenv from 'dotenv';
+import multiplayer_socket from "./socket/multiplayer_socket.js";
+import http from "http";
+import { Server } from "socket.io";
 
-dotenv.config();
-const PORT = process.env.PORT || 3000;
+const server = http.createServer(app);
 
-app.listen(PORT, () =>
-  console.log(`Server is running on http://localhost:${PORT}`)
-);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+multiplayer_socket(io);
+
+server.listen(PORT, () => console.log(`Server is running at port ${PORT}`));
