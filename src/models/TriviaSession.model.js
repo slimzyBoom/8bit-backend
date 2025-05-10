@@ -14,7 +14,9 @@ const triviaSessionSchema = new mongoose.Schema({
   ],
   score: { type: Number, default: 0 },
   completed: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
-});
+  startTime: { type: Date, default: Date.now },
+  // createdAt: { type: Date, default: Date.now },
+}, 
+{ timestamps: true });
 
 module.exports = mongoose.model("TriviaSession", triviaSessionSchema);

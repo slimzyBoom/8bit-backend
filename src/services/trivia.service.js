@@ -1,93 +1,123 @@
 const axios = require("axios");
 const TriviaSession = require("../models/TriviaSession.model");
-const shuffleArray = require("../utils/shuffle");
 const GameStats = require("../models/gameStats.model");
+const Question = require("../models/Question.model");
+const shuffleArray = require("../utils/shuffle");
+const Game = require("../models/game.model"); // ✅ Add this line
 
-// Fetch trivia questions from API or fallback
+
+// Local fallback questions
+const hardcodedQuestions = [
+  {
+    question: "What is the capital of France?",
+    correct_answer: "Paris",
+    incorrect_answers: ["Lyon", "Marseille", "Nice"],
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    correct_answer: "Mars",
+    incorrect_answers: ["Earth", "Saturn", "Jupiter"],
+  },
+  {
+    question: "Who is the president of Nigeria?",
+    correct_answer: "Tinubu",
+    incorrect_answers: ["Buhari", "Peter Obi", "Atiku"],
+  },
+];
+
+// Fetch trivia questions from API, DB, or hardcoded
 const fetchTriviaQuestions = async (amount = 5, difficulty = "easy") => {
-  let res;
-
   try {
-    // Try to fetch from OpenTDB API
-    res = await axios.get(
+    const res = await axios.get(
       `https://opentdb.com/api.php?amount=${amount}&difficulty=${difficulty}&type=multiple`
     );
+
+    const questions = res.data.results.map((q) => {
+      const allAnswers = shuffleArray([q.correct_answer, ...q.incorrect_answers]);
+      return {
+        question: q.question,
+        correct_answer: q.correct_answer,
+        incorrect_answers: q.incorrect_answers,
+        all_answers: allAnswers,
+        difficulty,
+      };
+    });
+
+    await Question.insertMany(questions);
+    return questions;
+
   } catch (err) {
-    console.error("🛑 OpenTDB API failed. Using fallback questions for testing.");
+    console.warn("⚠️ OpenTDB API failed. Trying DB fallback...");
 
-    // Use fallback hardcoded questions
-    res = {
-      data: {
-        results: [
-          {
-            question: "What is the capital of France?",
-            correct_answer: "Paris",
-            incorrect_answers: ["Lyon", "Marseille", "Nice"],
-          },
-          {
-            question: "Which planet is known as the Red Planet?",
-            correct_answer: "Mars",
-            incorrect_answers: ["Earth", "Saturn", "Jupiter"],
-          },
-          {
-            question: "Who is the president of Nigeria?",
-            correct_answer: "Tinubu",
-            incorrect_answers: ["Buhari", "Peter Obi", "Atiku"],
-          },
-        ],
-      },
-    };
-  }
-
-  // Format questions with shuffled answers
-  const questions = res.data.results.map((q) => {
-    const allAnswers = shuffleArray([
-      ...q.incorrect_answers,
-      q.correct_answer,
+    const dbFallback = await Question.aggregate([
+      { $match: { difficulty } },
+      { $sample: { size: amount } },
     ]);
-    return {
-      question: q.question,
-      correct_answer: q.correct_answer,
-      incorrect_answers: q.incorrect_answers,
-      all_answers: allAnswers,
-    };
-  });
 
-  return questions;
+    if (dbFallback.length > 0) return dbFallback;
+
+    console.warn("⚠️ DB empty. Using hardcoded questions.");
+    return hardcodedQuestions.map((q) => ({
+      ...q,
+      all_answers: shuffleArray([q.correct_answer, ...q.incorrect_answers]),
+      difficulty,
+    }));
+  }
 };
 
 // Start a new trivia session
 const startTriviaSession = async (userId, amount, difficulty) => {
   const questions = await fetchTriviaQuestions(amount, difficulty);
-  const session = await TriviaSession.create({ user: userId, questions, score: 0 });
+  const session = await TriviaSession.create({ 
+    user: userId, 
+    questions, 
+    score: 0, 
+    startTime: new Date(),
+  });
   return session;
 };
 
 // Submit answer to a question
 const submitAnswer = async (sessionId, questionIndex, answer) => {
   const session = await TriviaSession.findById(sessionId);
+
+  if (!session) {
+    throw new Error("Session not found");
+  }
   const question = session.questions[questionIndex];
   const isCorrect = question.correct_answer === answer;
 
-  // Record user's answer and correctness
   session.questions[questionIndex].user_answer = answer;
   session.questions[questionIndex].is_correct = isCorrect;
 
   if (isCorrect) session.score += 1;
-
   await session.save();
+
   return { isCorrect, score: session.score };
 };
 
-// Submit final score and save stats
-const submitFinalScore = async (userId, score, duration, difficulty = "easy") => {
+const submitFinalScore = async (userId, sessionId, score, difficulty = "easy") => {
+  const session = await TriviaSession.findById(sessionId);
+  if (!session) throw new Error("Session not found");
+
+  const endTime = new Date();
+  const durationInSeconds = Math.floor((endTime - session.startTime) / 1000); // auto-calculated
+
+  // ✅ Find the game by slug or name
+  const triviaGame = await Game.findOne({ slug: "trivia" }); // or { name: "Trivia" }
+  if (!triviaGame) throw new Error("Trivia game not found");
+
   const stat = await GameStats.create({
     user: userId,
     score,
-    duration,
+    duration: durationInSeconds,
     difficulty,
-    game: "Trivia",
+    game: triviaGame._id,
   });
+
+  session.completed = true;
+  await session.save();
+
   return stat;
 };
 
