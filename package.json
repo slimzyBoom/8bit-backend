@@ -2,7 +2,7 @@
   "name": "8bit-backend",
   "version": "1.0.0",
   "description": "Server for the game platform 8bits",
-  "main": "/src/server.js",
+  "main": "server.js",
   "scripts": {
     "start" : "node src/server.js",
     "dev": "nodemon src/server.js"
