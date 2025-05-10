@@ -1,10 +1,11 @@
 {
   "name": "8bit-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Server for the game platform 8bits",
+  "main": "/src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start" : "node src/server.js",
+    "dev": "nodemon src/server.js"
   },
   "repository": {
     "type": "git",
@@ -22,13 +23,18 @@
     "nodemon": "^3.1.10"
   },
   "dependencies": {
-    "@multiavatar/multiavatar": "^1.0.7",
+    "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "he": "^1.2.0",
+    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.14.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "socket.io": "^4.8.1",
+    "uuid": "^11.1.0"
   }
 }
