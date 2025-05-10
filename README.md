@@ -1,7 +1,3 @@
-Absolutely, Uche. Here's a well-structured `README.md` file tailored for your **Casual Web Game Platform** project (specifically focused on the backend, including the trivia and memory game setup, session handling, and multiplayer logic):
-
----
-
 ```markdown
 # 🎮 Casual Web Game Platform - Backend
 
