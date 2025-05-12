@@ -1,12 +1,13 @@
 import mongoose, { Schema } from "mongoose";
 
-
 const archievementSchema = new mongoose.Schema({
   key: String,
   description: String,
   archieved: Boolean,
   archievedAt: { type: Date, default: Date.now },
 });
+
+
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -59,7 +60,6 @@ const userSchema = new mongoose.Schema({
   },
   archievements: [archievementSchema],
 });
-
 
 const User = mongoose.model("User", userSchema);
 export default User;

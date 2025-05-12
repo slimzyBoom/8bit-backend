@@ -18,7 +18,8 @@ app.use(cors(corsOptions)); // Enable CORS for all routes
 app.use(express.json());
 app.use(cookie_parser());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan("dev" ? NODE_ENV === "development" : "combined")); // Use morgan for logging requests in development mode
+app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined"));
+
 
 
 app.use("/api/v1/auth", authRoute);
