@@ -6,7 +6,7 @@ const userRoutes = require("./routes/user.routes");
 const triviaRoutes = require("./routes/trivia.routes");
 const statsRoutes = require("./routes/stats.routes");
 const challengeRoutes = require("./routes/challenge.routes");
-//const flipbitRoutes = require("./routes/flipbitGame.routes");
+const flipbitRoutes = require("./routes/flipbitGame.routes");
 
 
 const app = express();
@@ -19,7 +19,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/trivia", triviaRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/challenges", challengeRoutes);
-//app.use("/api/flipbit", flipbitRoutes);
+app.use("/api/flipbit", flipbitRoutes);
 
 
 
