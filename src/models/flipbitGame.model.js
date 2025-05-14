@@ -8,7 +8,9 @@ const FlipbitGameSchema = new mongoose.Schema({
   moves: { type: Number, default: 0 },
   isCompleted: { type: Boolean, default: false },
   startedAt: { type: Date, default: Date.now },
-  endedAt: { type: Date }
+  endedAt: { type: Date },
+  score: { type: Number, default: 0 },
+
 });
 
 module.exports = mongoose.model("FlipbitGame", FlipbitGameSchema);

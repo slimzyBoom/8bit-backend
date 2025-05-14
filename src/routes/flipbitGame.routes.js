@@ -7,7 +7,6 @@ const {
     getLeaderboard 
 } = require("../controllers/flipbitGame.controller");
 
-//const { authenticate } = require("../middlewares/auth.middleware");
 const protect = require("../middlewares/auth.middleware");
 
 router.post("/start", protect, startGame);

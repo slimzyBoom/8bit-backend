@@ -26,34 +26,56 @@ async function getGame(gameId, userId) {
   return await FlipbitGame.findOne({ _id: gameId, user: userId });
 }
 
-async function flipCard(gameId, userId, cardIndex1, cardIndex2) {
-  const game = await getGame(gameId, userId);
-  if (!game || game.isCompleted) throw new Error("Invalid or completed game");
+async function playTurn(gameId, cardIndex1, cardIndex2) {
+  const game = await FlipbitGame.findById(gameId);
+
+  if (!game) {
+    throw new Error("Game not found.");
+  }
+
+  if (game.isCompleted) {
+    throw new Error("Game is already completed.");
+  }
+
+  if (
+    cardIndex1 === cardIndex2 ||
+    cardIndex1 < 0 || cardIndex2 < 0 ||
+    cardIndex1 >= game.cards.length || cardIndex2 >= game.cards.length
+  ) {
+    throw new Error("Invalid card indices.");
+  }
 
   const card1 = game.cards[cardIndex1];
   const card2 = game.cards[cardIndex2];
 
-  game.moves += 1;
-
-  if (
-    card1 === card2 &&
-    cardIndex1 !== cardIndex2 &&
-    !game.matchedCards.includes(card1)
-  ) {
-    game.matchedCards.push(card1);
+  if (game.matchedCards.includes(card1) && game.matchedCards.includes(card2)) {
+    throw new Error("Cards already matched.");
   }
 
-  if (game.matchedCards.length === game.cards.length / 2) {
-    game.isCompleted = true;
-    game.endedAt = new Date();
+  game.moves += 1;
+
+  let matched = false;
+  if (card1 === card2) {
+    matched = true;
+    if (!game.matchedCards.includes(card1)) {
+      game.matchedCards.push(card1);
+    }
+
+    if (game.matchedCards.length * 2 === game.cards.length) {
+      game.isCompleted = true;
+      game.endedAt = new Date();
+      game.score = Math.max(100 - game.moves * 2, 0);
+    }
   }
 
   await game.save();
+
   return {
-    matched: card1 === card2,
-    matchedCards: game.matchedCards,
-    isCompleted: game.isCompleted,
-    moves: game.moves
+    matched,
+    card1,
+    card2,
+    moves: game.moves,
+    isCompleted: game.isCompleted
   };
 }
 
@@ -63,15 +85,17 @@ async function getUserGames(userId) {
 
 async function getLeaderboard(limit = 10) {
   return await FlipbitGame.find({ isCompleted: true })
-    .sort({ moves: 1, endedAt: 1 })
+    .sort({ score: -1, endedAt: 1 })
     .limit(limit)
     .populate("user", "name");
+    
 }
 
 module.exports = {
   createGame,
   getGame,
-  flipCard,
+  //flipCard,
+  playTurn,
   getUserGames,
   getLeaderboard
 };

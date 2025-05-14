@@ -14,12 +14,15 @@ async function startGame(req, res) {
 async function playTurn(req, res) {
   const { gameId } = req.params;
   const { cardIndex1, cardIndex2 } = req.body;
-  const userId = req.user._id;
+
   try {
-    const result = await gameService.flipCard(gameId, userId, cardIndex1, cardIndex2);
-    res.status(200).json(result);
+    const result = await gameService.playTurn(gameId, cardIndex1, cardIndex2);
+    return res.status(200).json({
+      message: result.matched ? "Match found!" : "Not a match.",
+      ...result,
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 }
 
