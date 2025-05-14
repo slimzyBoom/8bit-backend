@@ -1,11 +1,17 @@
-const allowedOrigins = ["http://localhost:3000", "https://example.com"];
-const corsOptions =  {
-    origin: (origin, callback) => {
-        // allow requests with no origin (like mobile apps or curl requests) and
-        // if the origin is not in the list of allowed origins, return an error
-        if(!origin || allowedOrigins.includes(origin)) callback(null, true);
-        else callback(new Error("Not allowed by CORS"));
+const allowedOrigins = ["http://localhost:3000", "https://gamehub-sandy-nine.vercel.app/"];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      // Don't throw an error that breaks OPTIONS — just reject it gracefully
+      callback(new Error('Not allowed by CORS'));
     }
-}
+  },
+  credentials: true,
+  optionsSuccessStatus: 200 // ensures legacy browsers don’t break
+};
+
 
 export default corsOptions;
