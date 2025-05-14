@@ -1,5 +1,4 @@
-```markdown
-# 🎮 Casual Web Game Platform - Backend
+# 🎮 8bit Studios - Backend
 
 This is the backend for the **Casual Web Game Platform**, a unified system that supports multiple casual games like **Trivia** and **Memory Card**, with real-time multiplayer features, user sessions, leaderboards, and social interactions.
 
@@ -79,26 +78,22 @@ This is the backend for the **Casual Web Game Platform**, a unified system that 
 ### 🧠 Trivia Game (Single Player)
 | Method | Endpoint                  | Description                   |
 |--------|---------------------------|-------------------------------|
-| POST   | `/api/trivia/session`     | Create a trivia session       |
-| POST   | `/api/trivia/answer`      | Submit answer to a question   |
-| POST   | `/api/trivia/complete`    | Mark session as completed     |
+| POST   | `/api/trivia/single-player/create-session` | Create a trivia session       |
+| POST   | `/api/trivia/single-player/answer/:sessionId` | Submit answer to a question   |
+| POST   | `/api/trivia/single-player/result/:sessionId` | Mark session as completed     |
 
 ### 👥 Multiplayer
-| Method | Endpoint                  | Description                     |
+| Method | Endpoint and Events       | Description                     |
 |--------|---------------------------|---------------------------------|
-| POST   | `/api/room/create`        | Create multiplayer room         |
-| POST   | `/api/room/join`          | Join an existing room           |
-| POST   | `/api/room/start`         | Start multiplayer game          |
-| POST   | `/api/room/game-over`     | Submit scores & end game        |
-
+| POST   | `/api/multiplayer-generate-room` | Create multiplayer room         |
 ---
 
 ## 🔌 WebSocket Events (Multiplayer)
 
-- `joinRoom`
-- `syncGameState`
-- `playerMove`
-- `gameOver`
+- `join-room`
+- `answer-question`
+- `update-players`
+- `game-over`
 
 Handled inside `/socket/multiplayer.js`.
 
