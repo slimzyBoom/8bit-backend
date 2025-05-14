@@ -6,7 +6,7 @@ import {
 export const onlineUsers = new Map();
 
 const multiplayer_trivia_socket = async (io) => {
-  io.on("conection", (socket) => {
+  io.on("connection", (socket) => {
     //  Record User is connection or online
     const userId = socket.handshake.query.userId;
     if (userId) {
@@ -16,7 +16,6 @@ const multiplayer_trivia_socket = async (io) => {
 
     // Join a room to play a game...
     socket.on("join-room", ({ roomId }) => {
-      socket.join(roomId);
       joinSocketRoom(socket, io, roomId, userId);
       handleAnswerQuestionRoom(socket, io, userId, roomId);
     });
