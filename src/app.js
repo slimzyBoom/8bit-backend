@@ -1,4 +1,3 @@
-import { NODE_ENV } from "./config/env.config.js";
 import express from "express";
 const app = express();
 import verifyAuth from "./middleware/verify_auth.js";

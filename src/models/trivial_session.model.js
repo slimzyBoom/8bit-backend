@@ -25,6 +25,7 @@ const triviaSessionSchema = new mongoose.Schema({
       answeredAt: { type: Date, default: Date.now },
     }
   ],
+  isWinner: { type: Boolean, default: false },
   completed: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 });

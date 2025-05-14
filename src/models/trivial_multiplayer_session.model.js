@@ -12,8 +12,23 @@ const multiplayer_room_schema = mongoose.Schema({
   },
   players: [
     {
-      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      username: { type: String, default: "" },
+      avatar: { type: String, default: "" },
       score: { type: Number, default: 0 },
+      currentQuestionIndex: { type: Number, default: 0 },
+      questionsAnswered: [
+        {
+          questionIndex: { type: Number, required: true },
+          answer: { type: String, required: true },
+          isCorrect: { type: Boolean, required: true },
+          answeredAt: { type: Date, default: Date.now },
+        },
+      ],
     },
   ],
   questions: [
@@ -25,7 +40,6 @@ const multiplayer_room_schema = mongoose.Schema({
       difficulty: String,
     },
   ],
-  currentQuestionIndex: { type: String, default: 0 },
   totalQuestions: { type: Number, default: 0 },
   status: {
     type: String,
@@ -33,6 +47,7 @@ const multiplayer_room_schema = mongoose.Schema({
     default: "waiting",
   },
   createdAt: { type: Date, default: Date.now },
+  endedAt: Date,
 });
 
 export default mongoose.model("MultiplayerRoom", multiplayer_room_schema);
