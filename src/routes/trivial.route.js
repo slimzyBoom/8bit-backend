@@ -1,4 +1,4 @@
-import exppress from "express";
+import express from "express";
 import {
   getCategoriesController,
   createTriviaSessionController,
@@ -10,7 +10,7 @@ import { generateAndSaveRoom } from "../controllers/trivia_multiplayer.controlle
 import { TrivialSessionSchema } from "../joi_schemas/trivial.schema.js";
 import validatePayload from "../middleware/validatePayload.js";
 
-const router = exppress.Router();
+const router = express.Router();
 
 router.get("/categories", getCategoriesController);
 router.post("/single-player/create-session", validatePayload(TrivialSessionSchema, "query"),  createTriviaSessionController);

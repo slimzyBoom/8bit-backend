@@ -44,6 +44,9 @@ export const generateAndSaveRoom = async (req, res) => {
 };
 
 // IO socket to handle joining a room
+// This function handles the join-room event for a multiplayer trivia game.
+// It emits the room-joined event to all clients in the room when a user successfully joins.
+// It also checks if the room exists, if it's available for joining, and if the user is valid.
 
 export const joinSocketRoom = async (socket, io, roomId, userId) => {
   try {
@@ -120,6 +123,17 @@ export const handleAnswerQuestionRoom = (socket, io, userId, roomCode) => {
         return;
       };
 
+      // Check if the player is in the room
+      // The player should be found in the room's players array
+      const player = room.players.find((p) => p.userId.toString() === userId);
+      if (!player) {
+        socket.emit("room-error", {
+          message: "Player not found in room",
+          success: false,
+        });
+        return;
+      };
+
       // Check if the question index is valid
       // The questionIndex should be within the range of the questions array
       if (
@@ -135,17 +149,6 @@ export const handleAnswerQuestionRoom = (socket, io, userId, roomCode) => {
 
       const currentQuestion = room.questions[questionIndex];
       const correct = currentQuestion.answer === answer;
-
-      // Check if the player is in the room
-      // The player should be found in the room's players array
-      const player = room.players.find((p) => p.userId.toString() === userId);
-      if (!player) {
-        socket.emit("room-error", {
-          message: "Player not found in room",
-          success: false,
-        });
-        return;
-      };
 
       const alreadyAnswered = player.questionAnswered.find(
         (q) => q.questionIndex === questionIndex
@@ -167,12 +170,18 @@ export const handleAnswerQuestionRoom = (socket, io, userId, roomCode) => {
       if (correct) player.score += 1;
       player.currentQuestionIndex += 1;
 
+      socket.emit("answer-result", {
+        data: {
+          nextQuestionIndex: player.currentQuestionIndex,
+          isCorrect: correct,
+        }
+      })
+
       const playerFinished =
         player.currentQuestionIndex >= room.totalQuestions;
 
       // Broadcast progress to both players
       io.to(roomCode).emit("update-players", {
-        playerId: player.userId,
         username: player.username,
         score: player.score,
         currentQuestionIndex: player.currentQuestionIndex,
