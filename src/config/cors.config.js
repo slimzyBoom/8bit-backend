@@ -1,4 +1,4 @@
-const allowedOrigins = ["http://localhost:3000", "http://localhost:5173", "https://gamehub-sandy-nine.vercel.app/"];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5173", "https://gamehub-sandy-nine.vercel.app"];
 
 const corsOptions = {
   origin: (origin, callback) => {
