@@ -11,6 +11,7 @@ import authRoute from "./routes/auth.route.js";
 import trivial_route from "./routes/trivial.route.js";
 import morgan from "morgan";
 import errorHandler from "./middleware/errorLogger.js";
+import achievementRoute from "./routes/achievementRoutes.js";
 
 connectDB();
 
@@ -25,6 +26,7 @@ app.use("/api/v1/auth", authRoute);
 app.use(verifyAuth); // Apply verifyAuth middleware to all routes after auth routes
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/trivia", trivial_route);
+app.use('/api/v1/achievements', achievementRoute);
 app.use(errorHandler);
 
 export default app;
