@@ -1,4 +1,4 @@
-# 🎮 8bit Studios - Backend
+# 🎮 Eightbit Studios - Backend
 
 This is the backend for the **Casual Web Game Platform**, a unified system that supports multiple casual games like **Trivia** and **Memory Card**, with real-time multiplayer features, user sessions, leaderboards, and social interactions.
 
@@ -96,12 +96,3 @@ This is the backend for the **Casual Web Game Platform**, a unified system that 
 - `game-over`
 
 Handled inside `/socket/multiplayer.js`.
-
----
-
-## 🧪 Testing
-
-You can run unit and integration tests with:
-```bash
-npm test
-```
